@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.video{
+			position: relative;
+		}
+		.line{
+			position: absolute;
+			left: 5px;
+			right: 5px;
+			bottom: 10px;
+			height: 5px;
+			width: 620px;
+			background:#fff;
+		}
+		.line-play{
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 0;
+			background: red;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="video">
+		<video autoplay src="movie.mp4">
+			<source src="movie.mp4" type="video/mp4">
+  			<source src="movie.webm" type="video/webm">
+		</video>
+		<div class="line">
+			<div class="line-play"></div>
+		</div>
+	</div>
+	
+	<div class="video-bottom">
+		<button>确定</button>
+		<span class="current"></span>/
+		<span class="total"></span>
+	</div>
+	<script src="jquery-1.11.2.min.js"></script>
+	<script>
+	var $video=$("video")[0];
+	function format(value) {
+		var second = parseInt(value); // 秒
+		var mins = 0; // 分
+		var hours = 0; // 小时
+		if (second > 60) {
+			mins = parseInt(second / 60);
+			second = parseInt(second % 60);
+			if (mins > 60) {
+				hours = parseInt(mins / 60);
+				mins = parseInt(mins % 60);
+			}
+		}
+		var result = parseInt(second);
+		if (mins > 0) {
+			result = parseInt(mins) + ":" + result;
+		}
+		if (hours > 0) {
+			result = parseInt(hours) + ":" + result;
+		}
+		return result;
+	}
+	var timer=null;
+	function change(len){
+		$(".current").html(format($video.currentTime+1));
+		var len=100*($video.currentTime/$video.duration);
+		$(".line-play").css('width',len+"%");
+		if (Math.ceil($video.currentTime)==Math.ceil($video.duration)) {
+			$(".current").html($video.duration);
+			alert("ok")
+			clearInterval(timer);
+		}
+	} 
+	$video.addEventListener('canplaythrough',function(){
+		$(".total").html($video.duration);
+		 $(".current").html(0);
+		timer=setInterval("change()",1000);
+	});
+	
+	$("button").click(function(event) {
+		if ($video.paused) {
+			$video.play();
+		}else{
+			$video.pause();
+		}
+		
+	});
+	
+	
+
+	</script>
+</body>
+</html>
